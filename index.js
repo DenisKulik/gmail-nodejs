@@ -13,13 +13,16 @@ app.use(cors(corsOptions))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+const smtp_login = process.env.SMTP_LOGIN
+const smtp_password = process.env.SMTP_PASSWORD
+
 const transporter = nodemailer.createTransport({
     host: 'smtp.mail.ru',
     port: 465,
     secure: true,
     auth: {
-        user: 'kdp-work@mail.ru',
-        pass: 'cd9Mwh8RpJhGmt2xYLMz',
+        user: smtp_login,
+        pass: smtp_password,
     },
     tls: {
         rejectUnauthorized: false,
@@ -51,6 +54,8 @@ app.post('/sendMessage', async (req, res) => {
     res.send('ok')
 })
 
-app.listen(3000, () => {
+const port = process.env.PORT || 3000
+
+app.listen(port, () => {
     console.log(`Example app listening on port`)
 })
