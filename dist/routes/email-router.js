@@ -11,21 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getEmailRouter = void 0;
 const express_1 = require("express");
-const services_1 = require("../services");
 const types_1 = require("../types");
-const utils_1 = require("../utils");
+const adapters_1 = require("../adapters");
 const getEmailRouter = () => {
     const router = (0, express_1.Router)();
     router.post('/sendMessage', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { name, email, message } = req.body;
         try {
-            const htmlMessage = (0, utils_1.createHtmlMessage)(name, email, message);
-            yield services_1.emailTransporter.sendMail({
-                from: 'Portfolio <kdp-work@mail.ru>',
-                to: 'kulikdenis1996x@gmail.com',
-                subject: 'FEEDBACK FORM',
-                html: htmlMessage,
-            });
+            const { name, email, message } = req.body;
+            yield adapters_1.EmailAdapter.sendEmail(name, email, message);
             res.status(types_1.HttpStatuses.OK).send('Message sent successfully.');
         }
         catch (error) {
