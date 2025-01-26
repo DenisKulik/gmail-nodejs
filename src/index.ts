@@ -1,17 +1,21 @@
-const express = require('express')
-const nodemailer = require('nodemailer')
-const cors = require('cors')
-const bodyParser = require('body-parser')
+import express, { Express, Request, Response } from 'express'
+import cors from 'cors'
+import nodemailer from 'nodemailer'
 
-const app = express()
+const app: Express = express()
 
 const corsOptions = {
     origin: '*',
     methods: 'POST',
 }
-app.use(cors(corsOptions))
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+
+const jsonBodyMiddleware = express.json();
+const urlencodedMiddleware = express.urlencoded({ extended: false })
+const corsMiddleware = cors(corsOptions);
+
+app.use(corsMiddleware)
+app.use(urlencodedMiddleware)
+app.use(jsonBodyMiddleware)
 
 const smtp_login = process.env.SMTP_LOGIN
 const smtp_password = process.env.SMTP_PASSWORD
@@ -29,7 +33,7 @@ const transporter = nodemailer.createTransport({
     },
 })
 
-app.post('/sendMessage', async (req, res) => {
+app.post('/sendMessage', async (req: Request, res: Response) => {
     const { name, email, message } = req.body
 
     const htmlMessage = `
@@ -57,5 +61,5 @@ app.post('/sendMessage', async (req, res) => {
 const port = process.env.PORT || 3000
 
 app.listen(port, () => {
-    console.log(`Example app listening on port`)
+    console.log(`Example app listening on port: ${port}`)
 })
